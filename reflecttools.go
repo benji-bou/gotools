@@ -2,9 +2,10 @@ package tools
 
 import (
 	"errors"
-	"runtime"
-	// "log"
+	"fmt"
+	"log"
 	"reflect"
+	"runtime"
 	"strings"
 )
 
@@ -55,6 +56,7 @@ func getNameFromJSONTag(structType reflect.StructField) string {
 	if len(jsonTag) > 0 {
 		key = jsonTag[0]
 	}
+	log.Println("getNameFromJSONTag", key)
 	return key
 }
 
@@ -83,8 +85,12 @@ func NotEmpty(x interface{}) bool {
 }
 
 func Zero(x interface{}) interface{} {
-	resultType := reflect.TypeOf(x)
-	return reflect.Zero(resultType).Interface()
+	elemValue := reflect.ValueOf(x)
+	if elemValue.Kind() == reflect.Ptr {
+		elemValue = reflect.ValueOf(elemValue.Elem().Interface())
+	}
+	res := reflect.Zero(elemValue.Type()).Interface()
+	return res
 }
 
 func SortArrayByType(input []interface{}) map[string][]interface{} {
@@ -120,4 +126,37 @@ func GetMethod(input interface{}, methodName string) (bool, reflect.Value) {
 
 func GetFunctionName(i interface{}) string {
 	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+}
+
+func SetField(obj interface{}, name string, value interface{}) error {
+	structValue := reflect.ValueOf(obj).Elem()
+	structFieldValue := structValue.FieldByName(name)
+
+	if !structFieldValue.IsValid() {
+		return fmt.Errorf("No such field: %s in obj", name)
+	}
+
+	if !structFieldValue.CanSet() {
+		return fmt.Errorf("Cannot set %s field value", name)
+	}
+
+	structFieldType := structFieldValue.Type()
+	val := reflect.ValueOf(value)
+	if structFieldType != val.Type() {
+		invalidTypeError := errors.New("Provided value type didn't match obj field type")
+		return invalidTypeError
+	}
+
+	structFieldValue.Set(val)
+	return nil
+}
+
+func FillStruct(s interface{}, m map[string]interface{}) error {
+	for k, v := range m {
+		err := SetField(s, k, v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
