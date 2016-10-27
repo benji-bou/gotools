@@ -1,4 +1,4 @@
-package tools
+package reflectutil
 
 import (
 	"errors"

@@ -1,4 +1,4 @@
-package tools
+package containerutil
 
 func ConcatWithPostfix(a []string, postfix string) string {
 	res := ""

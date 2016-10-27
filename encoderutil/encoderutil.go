@@ -1,4 +1,4 @@
-package tools
+package encoderutil
 
 //JSONResp write the interface into a Json Format  it uses json.Marshal if interface get a type name, the json as a parent object with this name
 import "encoding/json"

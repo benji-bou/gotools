@@ -1,4 +1,4 @@
-package tools
+package fileutil
 
 import (
 	"archive/zip"
@@ -55,4 +55,21 @@ func CompressFiles(files []string, result io.Writer) (int, error) {
 		}
 	}
 	return succeed, nil
+}
+
+func CreateOrFatal(title string) *os.File {
+	file, err := os.Create(title)
+	if err != nil {
+		log.Fatal("Cannot create file", err)
+	}
+	return file
+}
+
+func ActionOnFile(title string, action func(file *os.File) error) error {
+	file, err := os.Create(title)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	return action(file)
 }
