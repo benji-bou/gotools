@@ -18,7 +18,7 @@ func GetInnerTypeName(elem interface{}) string {
 	if elemValue.Kind() == reflect.Slice {
 		return GetInnerTypeName(elemValue.Elem().Interface())
 	}
-	log.Println("GetInnerTypeName", elemValue.Type().Name())
+
 	return elemValue.Type().Name()
 }
 
