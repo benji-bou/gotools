@@ -32,6 +32,7 @@ func GetImageSrc(src string) (image.Image, string, error) {
 	var img image.Image
 	var format string
 	var err error
+	log.Print("GetImageSrc -> ", src)
 	urlData, err := dataurl.DecodeString(src)
 	if err != nil {
 		img, format, err = httputil.GetImage(src)
