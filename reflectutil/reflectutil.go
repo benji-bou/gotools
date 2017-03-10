@@ -10,13 +10,14 @@ import (
 )
 
 func GetInnerTypeName(elem interface{}) string {
+	log.Println("GetInnerTypeName -> ", reflect.TypeOf(elem))
 	elemValue := reflect.ValueOf(elem)
 	if elemValue.Kind() == reflect.Ptr {
 		elemValue = reflect.ValueOf(elemValue.Elem().Interface())
 		return GetInnerTypeName(elemValue.Interface())
 	}
-	if elemValue.Kind() == reflect.Slice {
-		return GetInnerTypeName(elemValue.Elem().Interface())
+	if elemValue.Kind() == reflect.Slice || elemValue.Kind() == reflect.Array {
+		return GetInnerTypeName(reflect.Zero(elemValue.Type().Elem()).Interface())
 	}
 
 	return elemValue.Type().Name()
