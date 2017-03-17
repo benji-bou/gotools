@@ -10,7 +10,6 @@ import (
 )
 
 func GetInnerTypeName(elem interface{}) string {
-	log.Println("GetInnerTypeName -> ", reflect.TypeOf(elem))
 	elemValue := reflect.ValueOf(elem)
 	if elemValue.Kind() == reflect.Ptr {
 		elemValue = reflect.ValueOf(elemValue.Elem().Interface())
