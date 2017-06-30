@@ -9,9 +9,7 @@ import (
 	"time"
 )
 
-type UnixTime struct {
-	time.Time
-}
+type UnixTime time.Time
 
 func (t *UnixTime) UnmarshalJSON(b []byte) error {
 	// you can now parse b as thoroughly as you want
